@@ -1,6 +1,6 @@
 import os
 import cv2
-
+import mediapipe as mp
 # Video capture setup
 cap = cv2.VideoCapture(0)
 
