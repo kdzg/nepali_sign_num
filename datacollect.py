@@ -1,6 +1,6 @@
 import os
 import cv2
-import mediapipe as mp
+
 # Video capture setup
 cap = cv2.VideoCapture(0)
 
@@ -19,6 +19,7 @@ while True:
         break
 
     # Define region of interest (ROI) for hand sign
+    cv2.rectangle(frame, (0, 40), (300, 400), (255, 255, 255), 2)  # Adding the frame around the ROI
     roi = frame[40:400, 0:300]
 
     # Display the frame
