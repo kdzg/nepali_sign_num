@@ -6,7 +6,7 @@ from datetime import datetime
 def save_image_with_custom_name(directory, roi):
     while True:
         # Prompt user for input to enter file name explicitly
-        str_name = input("Enter the device used: ")
+        str_name = input("Enter number: ")
         if not str_name.strip():
             # If user presses 'Enter' without entering a name, cancel image capture
             return
