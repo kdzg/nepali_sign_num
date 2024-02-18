@@ -1,5 +1,28 @@
 import os
 import cv2
+from datetime import datetime
+
+# Function to save an image with a custom name
+def save_image_with_custom_name(directory, roi):
+    while True:
+        # Prompt user for input to enter file name explicitly
+        str_name = input("Enter the device used: ")
+        if not str_name.strip():
+            # If user presses 'Enter' without entering a name, cancel image capture
+            return
+        # Get the current date and time
+        now = datetime.now()
+        date_time = now.strftime("%d_%m_%Y_%H_%M_%S")
+        # Construct full file path
+        file_name = f"{date_time}_{str_name}.png"
+        image_path = os.path.join(directory, file_name)
+        if not os.path.exists(image_path):
+            # Save the image
+            cv2.imwrite(image_path, roi)
+            print(f"Image saved as '{image_path}'")
+            break
+        else:
+            print("A file with that name already exists. Please choose a different name.")
 
 # Video capture setup
 cap = cv2.VideoCapture(0)
@@ -11,11 +34,17 @@ directory = 'Nepali_Number_Images/'
 if not os.path.exists(directory):
     os.makedirs(directory)
 
+# Check if the camera is opened successfully
+if not cap.isOpened():
+    print("Error: Failed to open the camera.")
+    exit()
+
 # While loop to continuously capture frames
 while True:
     # Read a frame from the video capture
     ret, frame = cap.read()
     if not ret:
+        print("Error: Failed to capture frame.")
         break
 
     # Define region of interest (ROI) for hand sign
@@ -27,60 +56,15 @@ while True:
 
     # Wait for keypress and save image based on the pressed key
     key = cv2.waitKey(1) & 0xFF
-    if key == ord('0'):  # Nepali Number ०
-        save_path = os.path.join(directory, '0')
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f'{len(os.listdir(save_path))}.png'), roi)
-    elif key == ord('1'):  # Nepali Number १
-        save_path = os.path.join(directory, '1')
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f'{len(os.listdir(save_path))}.png'), roi)
-    elif key == ord('2'):  # Nepali Number २
-        save_path = os.path.join(directory, '2')
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f'{len(os.listdir(save_path))}.png'), roi)
-    elif key == ord('3'):  # Nepali Number ३
-        save_path = os.path.join(directory, '3')
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f'{len(os.listdir(save_path))}.png'), roi)
-    elif key == ord('4'):  # Nepali Number ४
-        save_path = os.path.join(directory, '4')
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f'{len(os.listdir(save_path))}.png'), roi)
-    elif key == ord('5'):  # Nepali Number ५
-        save_path = os.path.join(directory, '5')
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f'{len(os.listdir(save_path))}.png'), roi)
-    elif key == ord('6'):  # Nepali Number ६
-        save_path = os.path.join(directory, '6')
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f'{len(os.listdir(save_path))}.png'), roi)
-    elif key == ord('7'):  # Nepali Number ७
-        save_path = os.path.join(directory, '7')
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f'{len(os.listdir(save_path))}.png'), roi)
-    elif key == ord('8'):  # Nepali Number ८
-        save_path = os.path.join(directory, '8')
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f'{len(os.listdir(save_path))}.png'), roi)
-    elif key == ord('9'):  # Nepali Number ९
-        save_path = os.path.join(directory, '9')
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(os.path.join(save_path, f'{len(os.listdir(save_path))}.png'), roi)
-
-    # Break the loop when 'q' is pressed or the close button of the window is clicked
-    if key == ord('q') or cv2.getWindowProperty("Nepali Number Sign Detection", cv2.WND_PROP_VISIBLE) < 1:
+    if key == ord('q'):
+        # Break the loop when 'q' is pressed
         break
+    elif chr(key) in '0123456789':  # Check if the pressed key is a number key
+        save_path = os.path.join(directory, chr(key))
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        # Prompt user for custom file name and save image
+        save_image_with_custom_name(save_path, roi)
 
 # Release video capture and close all OpenCV windows
 cap.release()
